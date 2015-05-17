@@ -3,6 +3,8 @@ package errorx
 import (
 	"encoding/json"
 	"fmt"
+	"path/filepath"
+	"runtime"
 )
 
 const (
@@ -23,6 +25,8 @@ type Errorx struct {
 	ErrorMsg     string `json:"error_msg"`
 	ErrorDetails string `json:"error_details,omitempty"`
 	ErrorHint    string `json:"error_hint,omitempty"`
+	File         string `json:"file,omitempty"`
+	Line         int    `json:"line,omitempty"`
 }
 
 // New returns an error with error code and error messages provided in
@@ -65,11 +69,12 @@ func (e Errorx) Error() string {
 	if verbosity == 0 || (e.ErrorDetails == "" && e.ErrorHint == "") {
 		return fmt.Sprintf("error %d: %s", e.ErrorCode, e.ErrorMsg)
 	}
-	if verbosity == 1 || e.ErrorHint == "" {
+	if verbosity == 1 {
 		return fmt.Sprintf("error %d: %s - %s", e.ErrorCode, e.ErrorMsg, e.ErrorDetails)
 	}
-	return fmt.Sprintf("error %d: %s - %s - %s", e.ErrorCode, e.ErrorMsg, e.ErrorDetails, e.ErrorHint)
-
+	_, fn, line, _ := runtime.Caller(1)
+	_, file := filepath.Split(fn)
+	return fmt.Sprintf("%s:%d: error %d: %s - %s - %s", file, line, e.ErrorCode, e.ErrorMsg, e.ErrorDetails, e.ErrorHint)
 }
 
 // Errorf is a variant of Error that formats according to ErrorMsg
@@ -79,10 +84,12 @@ func (e Errorx) Errorf(params ...interface{}) string {
 	if verbosity == 0 || (e.ErrorDetails == "" && e.ErrorHint == "") {
 		return fmt.Sprintf("error %d: %s", e.ErrorCode, fmt.Sprintf(e.ErrorMsg, params...))
 	}
-	if verbosity == 1 || e.ErrorHint == "" {
+	if verbosity == 1 {
 		return fmt.Sprintf("error %d: %s - %s", e.ErrorCode, fmt.Sprintf(e.ErrorMsg, params...), e.ErrorDetails)
 	}
-	return fmt.Sprintf("error %d: %s - %s - %s", e.ErrorCode, fmt.Sprintf(e.ErrorMsg, params...), e.ErrorDetails, e.ErrorHint)
+	_, fn, line, _ := runtime.Caller(1)
+	_, file := filepath.Split(fn)
+	return fmt.Sprintf("%s:%d: error %d: %s - %s - %s", file, line, e.ErrorCode, fmt.Sprintf(e.ErrorMsg, params...), e.ErrorDetails, e.ErrorHint)
 }
 
 // Json returns a json representation (as []byte) of errorx and error
@@ -92,10 +99,12 @@ func (e Errorx) Json() ([]byte, error) {
 	if verbosity > 0 && e.ErrorDetails != "" {
 		err.ErrorDetails = e.ErrorDetails
 	}
-	if verbosity > 1 && e.ErrorHint != "" {
+	if verbosity > 1 {
 		err.ErrorHint = e.ErrorHint
+		_, fn, line, _ := runtime.Caller(1)
+		err.Line = line
+		_, err.File = filepath.Split(fn)
 	}
-	//spew.Dump(err)
 	return json.Marshal(&err)
 }
 
@@ -107,8 +116,11 @@ func (e Errorx) Jsonf(params ...interface{}) ([]byte, error) {
 	if verbosity > 0 && e.ErrorDetails != "" {
 		err.ErrorDetails = e.ErrorDetails
 	}
-	if verbosity > 1 && e.ErrorHint != "" {
+	if verbosity > 1 {
 		err.ErrorHint = e.ErrorHint
+		_, fn, line, _ := runtime.Caller(1)
+		err.Line = line
+		_, err.File = filepath.Split(fn)
 	}
 	return json.Marshal(err)
 }

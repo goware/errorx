@@ -20,8 +20,9 @@ func TestErrorVerbosity(t *testing.T) {
 	}
 
 	errorx.SetVerbosity(errorx.Debug)
-	if e.Error() != "error 10: error message - error details - error hint" {
-		t.Errorf("Expected 'error 10: error message - error details - error hint', got '%s'", e.Error())
+	err := e.Error()
+	if err != "errorx_test.go:23: error 10: error message - error details - error hint" {
+		t.Errorf("Expected 'errorx_test.go:23: error 10: error message - error details - error hint', got '%s'", err)
 	}
 }
 
@@ -39,8 +40,9 @@ func TestErrorfVerbosity(t *testing.T) {
 	}
 
 	errorx.SetVerbosity(errorx.Debug)
-	if e.Errorf("myFile.sh") != "error 11: could not find 'myFile.sh' - error details - error hint" {
-		t.Errorf("Expected 'error 11: could not find 'myFile.sh' - error details - error hint', got '%s'", e.Errorf("myFile.sh"))
+	err := e.Errorf("myFile.sh")
+	if err != "errorx_test.go:43: error 11: could not find 'myFile.sh' - error details - error hint" {
+		t.Errorf("Expected 'errorx_test.go:43: error 11: could not find 'myFile.sh' - error details - error hint', got '%s'", err)
 	}
 }
 
@@ -61,8 +63,8 @@ func TestJsonVerbosity(t *testing.T) {
 
 	errorx.SetVerbosity(errorx.Debug)
 	err, _ = e.Json()
-	if string(err) != `{"error_code":12,"error_msg":"error message","error_details":"error details","error_hint":"error hint"}` {
-		t.Errorf(`Expected '{"error_code":12,"error_msg":"error message","error_details":"error details","error_hint":"error hint"}}', got '%s'`, string(err))
+	if string(err) != `{"error_code":12,"error_msg":"error message","error_details":"error details","error_hint":"error hint","file":"errorx_test.go","line":65}` {
+		t.Errorf(`Expected '{"error_code":12,"error_msg":"error message","error_details":"error details","error_hint":"error hint","file":"errorx_test.go","line":65}}', got '%s'`, string(err))
 	}
 }
 
@@ -83,8 +85,8 @@ func TestJsonfVerbosity(t *testing.T) {
 
 	errorx.SetVerbosity(errorx.Debug)
 	err, _ = e.Jsonf("myFile.sh")
-	if string(err) != `{"error_code":13,"error_msg":"could not find 'myFile.sh'","error_details":"error details","error_hint":"error hint"}` {
-		t.Errorf(`Expected '{"error_code":13,"error_msg":"could not find 'myFile.sh'","error_details":"error details","error_hint":"error hint"}}', got '%s'`, string(err))
+	if string(err) != `{"error_code":13,"error_msg":"could not find 'myFile.sh'","error_details":"error details","error_hint":"error hint","file":"errorx_test.go","line":87}` {
+		t.Errorf(`Expected '{"error_code":13,"error_msg":"could not find 'myFile.sh'","error_details":"error details","error_hint":"error hint","file":"errorx_test.go","line":87}}', got '%s'`, string(err))
 	}
 }
 
