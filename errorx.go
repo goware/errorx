@@ -63,12 +63,12 @@ func (e Errorx) Code() int {
 // on verbosity level set
 func (e Errorx) Error() string {
 	if verbosity == 0 || (e.errorDetails == "" && e.errorHint == "") {
-		return fmt.Sprintf("Error %d: %s", e.errorCode, e.errorMsg)
+		return fmt.Sprintf("error %d: %s", e.errorCode, e.errorMsg)
 	}
 	if verbosity == 1 || e.errorHint == "" {
-		return fmt.Sprintf("Error %d: %s - %s", e.errorCode, e.errorMsg, e.errorDetails)
+		return fmt.Sprintf("error %d: %s - %s", e.errorCode, e.errorMsg, e.errorDetails)
 	}
-	return fmt.Sprintf("Error %d: %s - %s - %s", e.errorCode, e.errorMsg, e.errorDetails, e.errorHint)
+	return fmt.Sprintf("error %d: %s - %s - %s", e.errorCode, e.errorMsg, e.errorDetails, e.errorHint)
 
 }
 
@@ -77,12 +77,12 @@ func (e Errorx) Error() string {
 // will not be formated
 func (e Errorx) Errorf(params ...interface{}) string {
 	if verbosity == 0 || (e.errorDetails == "" && e.errorHint == "") {
-		return fmt.Sprintf("Error %d: %s", e.errorCode, fmt.Sprintf(e.errorMsg, params...))
+		return fmt.Sprintf("error %d: %s", e.errorCode, fmt.Sprintf(e.errorMsg, params...))
 	}
 	if verbosity == 1 || e.errorHint == "" {
-		return fmt.Sprintf("Error %d: %s - %s", e.errorCode, fmt.Sprintf(e.errorMsg, params...), e.errorDetails)
+		return fmt.Sprintf("error %d: %s - %s", e.errorCode, fmt.Sprintf(e.errorMsg, params...), e.errorDetails)
 	}
-	return fmt.Sprintf("Error %d: %s - %s - %s", e.errorCode, fmt.Sprintf(e.errorMsg, params...), e.errorDetails, e.errorHint)
+	return fmt.Sprintf("error %d: %s - %s - %s", e.errorCode, fmt.Sprintf(e.errorMsg, params...), e.errorDetails, e.errorHint)
 }
 
 // Json returns a json representation (as []byte) of errorx and error
