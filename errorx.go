@@ -73,7 +73,7 @@ func (e Errorx) Error() string {
 }
 
 // Errorf is a variant of Error that formats according to errorMsg
-// speficier and returns resulting string error details and hint
+// speficier and returns resulting string. Error details and hint
 // will not be formated
 func (e Errorx) Errorf(params ...interface{}) string {
 	if verbosity == 0 || (e.errorDetails == "" && e.errorHint == "") {
@@ -99,7 +99,7 @@ func (e Errorx) Json() ([]byte, error) {
 }
 
 // Jsonf is a variant of Json that formats according to errorMsg
-// speficier and returns resulting string error details and hint
+// speficier and returns resulting string. Error details and hint
 // will not be formated
 func (e Errorx) Jsonf(params ...interface{}) ([]byte, error) {
 	err := Errorx{errorCode: e.errorCode, errorMsg: fmt.Sprintf(e.errorMsg, params...)}
