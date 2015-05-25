@@ -133,7 +133,7 @@ func (e Errorx) Errorf(params ...interface{}) string {
 // if marshaling fails
 func (e Errorx) Json() ([]byte, error) {
 	e.getTrace()
-	err := e.verbositySubset()
+	err := e.verbositySubset(verbosity > 1)
 
 	return json.Marshal(err)
 }
@@ -149,7 +149,7 @@ func (e Errorx) Jsonf(params ...interface{}) ([]byte, error) {
 	return json.Marshal(err)
 }*/
 
-func (e Errorx) verbositySubset() Errorx {
+func (e Errorx) verbositySubset(trace bool) Errorx {
 	err := Errorx{Code: e.Code, Message: e.Message}
 	maxMsg := len(e.Details)
 	if maxMsg > verbosity {
@@ -162,16 +162,17 @@ func (e Errorx) verbositySubset() Errorx {
 	if verbosity > 1 {
 		if e.Cause != nil {
 			if cause, ok := e.Cause.(Errorx); ok {
-				err.Cause = cause.verbositySubset()
+				err.Cause = cause.verbositySubset(false)
 			} else {
 				err.Cause = Errorx{Message: e.Cause.Error()}
 			}
 		}
+		err.Stack = e.Stack
 	}
 	return err
 }
 
-func (e Errorx) getTrace() {
+func (e *Errorx) getTrace() {
 	if verbosity < 2 {
 		return
 	}
