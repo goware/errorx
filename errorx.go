@@ -42,7 +42,7 @@ type Stack []StackFrame
 func (s Stack) String() string {
 	var buffer bytes.Buffer
 	for i := 0; i < len(s); i++ {
-		buffer.WriteString(fmt.Sprintf("%s:%d %s", s[i].File, s[i].Line, s[i].Function))
+		buffer.WriteString(fmt.Sprintf("%s:%d %s\n", s[i].File, s[i].Line, s[i].Function))
 	}
 	return buffer.String()
 }
@@ -64,7 +64,7 @@ func New(code int, ErrorMsg ...string) *Errorx {
 }
 
 // Wrap
-func (e Errorx) Wrap(err error) {
+func (e *Errorx) Wrap(err error) {
 	e.Cause = err
 }
 
