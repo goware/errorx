@@ -11,93 +11,58 @@ func TestErrorVerbosity(t *testing.T) {
 	e := errorx.New(10, "error message", "error details", "error hint")
 
 	errorx.SetVerbosity(errorx.Info)
-	if e.Error() != "error 10: error message" {
-		t.Errorf("Expected 'error 10: error message', got '%s'", e.Error())
+	err := e.Error()
+	expected := "error 10: error message"
+	if err != expected {
+		t.Errorf("Expected %s, got '%s'", expected, err)
 	}
 
 	errorx.SetVerbosity(errorx.Verbose)
-	if e.Error() != "error 10: error message | error details" {
-		t.Errorf("Expected 'error 10: error message | error details', got '%s'", e.Error())
+	err = e.Error()
+	expected = "error 10: error message | error details"
+	if err != expected {
+		t.Errorf("Expected %s, got '%s'", expected, err)
 	}
 
 	errorx.SetVerbosity(errorx.Debug)
-	err := e.Error()
-	if err != "errorx_test.go:24: error 10: error message | error details; error hint" {
-		t.Errorf("Expected 'errorx_test.go:23: error 10: error message | error details; error hint', got '%s'", err)
+	err = e.Error()
+	expected = "errorx_test.go:28: error 10: error message | error details; error hint"
+	if err != expected {
+		t.Errorf("Expected %s, got '%s'", expected, err)
 	}
 
 	errorx.SetVerbosity(errorx.Trace)
 	err = e.Error()
-	if err != "errorx_test.go:24: error 10: error message | error details; error hint" {
-		t.Errorf("Expected 'errorx_test.go:23: error 10: error message | error details; error hint', got '%s'", err)
+	expected = "errorx_test.go:35: error 10: error message | error details; error hint\nerrorx_test.go:35 github.com/c2h5oh/errorx_test.TestErrorVerbosity\ntesting.go:447 testing.tRunner\nasm_amd64.s:2232 runtime.goexit"
+	if err != expected {
+		t.Errorf("Expected %s, got '%s'", expected, err)
 	}
 }
-
-/*
-func TestErrorfVerbosity(t *testing.T) {
-	e := errorx.New(11, "could not find '%s'", "error details", "error hint")
-
-	errorx.SetVerbosity(errorx.Info)
-	if e.Errorf("myFile.sh") != "error 11: could not find 'myFile.sh'" {
-		t.Errorf("Expected 'error 11: could not find 'myFile.sh'', got '%s'", e.Errorf("myFile.sh"))
-	}
-
-	errorx.SetVerbosity(errorx.Verbose)
-	if e.Errorf("myFile.sh") != "error 11: could not find 'myFile.sh' - error details" {
-		t.Errorf("Expected 'error 11: could not find 'myFile.sh' - error details', got '%s'", e.Errorf("myFile.sh"))
-	}
-
-	errorx.SetVerbosity(errorx.Debug)
-	err := e.Errorf("myFile.sh")
-	if err != "errorx_test.go:43: error 11: could not find 'myFile.sh' - error details - error hint" {
-		t.Errorf("Expected 'errorx_test.go:43: error 11: could not find 'myFile.sh' - error details - error hint', got '%s'", err)
-	}
-}*/
 
 func TestJsonVerbosity(t *testing.T) {
 	e := errorx.New(12, "error message", "error details", "error hint")
 
 	errorx.SetVerbosity(errorx.Info)
 	err, _ := e.Json()
-	if string(err) != `{"error_code":12,"error_message":"error message"}` {
-		t.Errorf(`Expected '{"error_code":12,"error_messsage":"error message"}', got '%s'`, string(err))
+	expected := `{"error_code":12,"error_message":"error message"}`
+	if string(err) != expected {
+		t.Errorf(`Expected '%s', got '%s'`, expected, string(err))
 	}
 
 	errorx.SetVerbosity(errorx.Verbose)
 	err, _ = e.Json()
-	if string(err) != `{"error_code":12,"error_message":"error message","error_details":["error details"]}` {
-		t.Errorf(`Expected '{"error_code":12,"error_message":"error message","error_details":["error details"]}', got '%s'`, string(err))
+	expected = `{"error_code":12,"error_message":"error message","error_details":["error details"]}`
+	if string(err) != expected {
+		t.Errorf(`Expected '%s', got '%s'`, expected, string(err))
 	}
 
 	errorx.SetVerbosity(errorx.Debug)
 	err, _ = e.Json()
-	if string(err) != `{"error_code":12,"error_message":"error message","error_details":["error details","error hint"],"stack":[{"file":"errorx_test.go","line":67,"function":"github.com/c2h5oh/errorx_test.TestJsonVerbosity"}]}` {
-		t.Errorf(`Expected '{"error_code":12,"error_message":"error message","error_details":["error details","error hint"],"stack":[{"file":"errorx_test.go","line":67,"function":"github.com/c2h5oh/errorx_test.TestJsonVerbosity"}]}', got '%s'`, string(err))
+	expected = `{"error_code":12,"error_message":"error message","error_details":["error details","error hint"],"stack":[{"file":"errorx_test.go","line":60,"function":"github.com/c2h5oh/errorx_test.TestJsonVerbosity"}]}`
+	if string(err) != expected {
+		t.Errorf(`Expected '%s', got '%s'`, expected, string(err))
 	}
 }
-
-/*
-func TestJsonfVerbosity(t *testing.T) {
-	e := errorx.New(13, "could not find '%s'", "error details", "error hint")
-
-	errorx.SetVerbosity(errorx.Info)
-	err, _ := e.Jsonf("myFile.sh")
-	if string(err) != `{"error_code":13,"error_msg":"could not find 'myFile.sh'"}` {
-		t.Errorf(`Expected '{"error_code":13,"error_msg":"could not find 'myFile.sh'"}', got '%s'`, string(err))
-	}
-
-	errorx.SetVerbosity(errorx.Verbose)
-	err, _ = e.Jsonf("myFile.sh")
-	if string(err) != `{"error_code":13,"error_msg":"could not find 'myFile.sh'","error_details":"error details"}` {
-		t.Errorf(`Expected '{"error_code":13,"error_msg":"could not find 'myFile.sh'","error_details":"error details"}', got '%s'`, string(err))
-	}
-
-	errorx.SetVerbosity(errorx.Debug)
-	err, _ = e.Jsonf("myFile.sh")
-	if string(err) != `{"error_code":13,"error_msg":"could not find 'myFile.sh'","error_details":"error details","error_hint":"error hint","file":"errorx_test.go","line":87}` {
-		t.Errorf(`Expected '{"error_code":13,"error_msg":"could not find 'myFile.sh'","error_details":"error details","error_hint":"error hint","file":"errorx_test.go","line":87}}', got '%s'`, string(err))
-	}
-}*/
 
 func TestErrorCode(t *testing.T) {
 	e := errorx.New(14, "error message", "error details", "error hint")
@@ -108,33 +73,113 @@ func TestErrorCode(t *testing.T) {
 }
 
 func TestErrorEmbedding(t *testing.T) {
-	wrappableErrorx := errorx.New(2, "wrapped error message", "wrapped error details", "wrapped error hint")
+	wrappableErrorx := errorx.New(200, "wrapped error message", "wrapped error details", "wrapped error hint")
 	wrappableError := errors.New("wrapped regular error")
 	e1 := errorx.New(10, "error message", "error details", "error hint")
 	e1.Wrap(wrappableErrorx)
-	e2 := errorx.New(10, "error message", "error details", "error hint")
+	e2 := errorx.New(11, "error message", "error details", "error hint")
 	e2.Wrap(wrappableError)
 
 	errorx.SetVerbosity(errorx.Info)
-	if e1.Error() != "error 10: error message" {
-		t.Errorf("Expected 'error 10: error message', got '%s'", e1.Error())
+	expected := "error 10: error message"
+	if e1.Error() != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, e1.Error())
 	}
-	if e2.Error() != "error 10: error message" {
-		t.Errorf("Expected 'error 10: error message', got '%s'", e2.Error())
+	expected = "error 11: error message"
+	if e2.Error() != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, e2.Error())
 	}
 
 	errorx.SetVerbosity(errorx.Verbose)
-	if e1.Error() != "error 10: error message | error details\ncause: error 2: wrapped error message | wrapped error details" {
-		t.Errorf("error 10: error message | error details\ncause: error 2: wrapped error message | wrapped error details', got '%s'", e1.Error())
+	expected = "error 10: error message | error details\ncause: error 200: wrapped error message | wrapped error details"
+	if e1.Error() != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, e1.Error())
 	}
-
-	if e2.Error() != "error 10: error message | error details\ncause: wrapped regular error" {
-		t.Errorf("error 10: error message | error details\ncause: wrapped regular error', got '%s'", e2.Error())
+	expected = "error 11: error message | error details\ncause: wrapped regular error"
+	if e2.Error() != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, e2.Error())
 	}
 
 	errorx.SetVerbosity(errorx.Debug)
 	err := e1.Error()
-	if err != "errorx_test.go:23: error 10: error message | error details; error hint" {
-		t.Errorf("Expected 'errorx_test.go:23: error 10: error message | error details; error hint', got '%s'", err)
+	expected = "errorx_test.go:104: error 10: error message | error details; error hint\ncause: error 200: wrapped error message | wrapped error details; wrapped error hint"
+	if err != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, err)
+	}
+
+	err = e2.Error()
+	expected = "errorx_test.go:110: error 11: error message | error details; error hint\ncause: wrapped regular error"
+	if err != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, err)
+	}
+
+	errorx.SetVerbosity(errorx.Trace)
+	err = e1.Error()
+	expected = "errorx_test.go:117: error 10: error message | error details; error hint\ncause: error 200: wrapped error message | wrapped error details; wrapped error hint\nerrorx_test.go:117 github.com/c2h5oh/errorx_test.TestErrorEmbedding\ntesting.go:447 testing.tRunner\nasm_amd64.s:2232 runtime.goexit"
+	if err != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, err)
+	}
+
+	err = e2.Error()
+	expected = "errorx_test.go:123: error 11: error message | error details; error hint\ncause: wrapped regular error\nerrorx_test.go:123 github.com/c2h5oh/errorx_test.TestErrorEmbedding\ntesting.go:447 testing.tRunner\nasm_amd64.s:2232 runtime.goexit"
+	if err != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, err)
+	}
+}
+
+func TestJsonErrorEmbedding(t *testing.T) {
+	wrappableErrorx := errorx.New(200, "wrapped error message", "wrapped error details", "wrapped error hint")
+	wrappableError := errors.New("wrapped regular error")
+	e1 := errorx.New(10, "error message", "error details", "error hint")
+	e1.Wrap(wrappableErrorx)
+	e2 := errorx.New(11, "error message", "error details", "error hint")
+	e2.Wrap(wrappableError)
+
+	errorx.SetVerbosity(errorx.Info)
+	e, _ := e1.Json()
+	expected := `{"error_code":10,"error_message":"error message"}`
+	if string(e) != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, string(e))
+	}
+	e, _ = e2.Json()
+	expected = `{"error_code":11,"error_message":"error message"}`
+	if string(e) != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, string(e))
+	}
+
+	errorx.SetVerbosity(errorx.Verbose)
+	e, _ = e1.Json()
+	expected = `{"error_code":10,"error_message":"error message","error_details":["error details"]}`
+	if string(e) != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, string(e))
+	}
+	e, _ = e2.Json()
+	expected = `{"error_code":11,"error_message":"error message","error_details":["error details"]}`
+	if string(e) != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, string(e))
+	}
+
+	errorx.SetVerbosity(errorx.Debug)
+	e, _ = e1.Json()
+	expected = `{"error_code":10,"error_message":"error message","error_details":["error details","error hint"],"cause":{"error_code":200,"error_message":"wrapped error message","error_details":["wrapped error details","wrapped error hint"]},"stack":[{"file":"errorx_test.go","line":163,"function":"github.com/c2h5oh/errorx_test.TestJsonErrorEmbedding"}]}`
+	if string(e) != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, string(e))
+	}
+	e, _ = e2.Json()
+	expected = `{"error_code":11,"error_message":"error message","error_details":["error details","error hint"],"cause":{"error_message":"wrapped regular error"},"stack":[{"file":"errorx_test.go","line":168,"function":"github.com/c2h5oh/errorx_test.TestJsonErrorEmbedding"}]}`
+	if string(e) != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, string(e))
+	}
+
+	errorx.SetVerbosity(errorx.Trace)
+	e, _ = e1.Json()
+	expected = `{"error_code":10,"error_message":"error message","error_details":["error details","error hint"],"cause":{"error_code":200,"error_message":"wrapped error message","error_details":["wrapped error details","wrapped error hint"]},"stack":[{"file":"errorx_test.go","line":175,"function":"github.com/c2h5oh/errorx_test.TestJsonErrorEmbedding"},{"file":"testing.go","line":447,"function":"testing.tRunner"},{"file":"asm_amd64.s","line":2232,"function":"runtime.goexit"}]}`
+	if string(e) != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, string(e))
+	}
+	e, _ = e2.Json()
+	expected = `{"error_code":11,"error_message":"error message","error_details":["error details","error hint"],"cause":{"error_message":"wrapped regular error"},"stack":[{"file":"errorx_test.go","line":180,"function":"github.com/c2h5oh/errorx_test.TestJsonErrorEmbedding"},{"file":"testing.go","line":447,"function":"testing.tRunner"},{"file":"asm_amd64.s","line":2232,"function":"runtime.goexit"}]}`
+	if string(e) != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, string(e))
 	}
 }
