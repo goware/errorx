@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/c2h5oh/errorx.svg?branch=master)](https://travis-ci.org/c2h5oh/errorx)
-[![GoDoc](https://godoc.org/github.com/c2h5oh/errorx?status.svg)](https://godoc.org/github.com/c2h5oh/errorx)
+[![Build Status](https://travis-ci.org/goware/errorx.svg?branch=master)](https://travis-ci.org/goware/errorx)
+[![GoDoc](https://godoc.org/github.com/goware/errorx?status.svg)](https://godoc.org/github.com/goware/errorx)
 
 # errorx
 Feature-rich Golang error interface implementation inspired by Postgres error message style guide http://www.postgresql.org/docs/devel/static/error-style-guide.html
@@ -15,7 +15,7 @@ Feature-rich Golang error interface implementation inspired by Postgres error me
 * JSON errors you can just write to your webhandler
 
 # docs
-http://godoc.org/github.com/c2h5oh/errorx
+http://godoc.org/github.com/goware/errorx
 
 # example output
 ### json, nested error, verbosity: Trace
@@ -39,7 +39,7 @@ http://godoc.org/github.com/c2h5oh/errorx
       {
          "file":"errorx_test.go",
          "line":175,
-         "function":"github.com/c2h5oh/errorx_test.TestJsonErrorEmbedding"
+         "function":"github.com/goware/errorx_test.TestJsonErrorEmbedding"
       },
       {
          "file":"testing.go",
