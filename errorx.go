@@ -42,7 +42,7 @@ type Stack []StackFrame
 func (s Stack) String() string {
 	var buffer bytes.Buffer
 	for i := 0; i < len(s); i++ {
-		buffer.WriteString(fmt.Sprintf("%s:%d %s\n", s[i].File, s[i].Line, s[i].Function))
+		buffer.WriteString(fmt.Sprintf("\n%s:%d %s", s[i].File, s[i].Line, s[i].Function))
 	}
 	return buffer.String()
 }
@@ -107,9 +107,9 @@ func (e Errorx) Error() string {
 		e.getTrace()
 
 		if e.Cause == nil {
-			return fmt.Sprintf("%s:%d: error %d: %s | %s\n%s", e.Stack[0].File, e.Stack[0].Line, e.Code, e.Message, strings.Join(e.Details[0:maxMsg], "; "), e.Stack.String())
+			return fmt.Sprintf("%s:%d: error %d: %s | %s %s", e.Stack[0].File, e.Stack[0].Line, e.Code, e.Message, strings.Join(e.Details[0:maxMsg], "; "), e.Stack.String())
 		}
-		return fmt.Sprintf("%s:%d: error %d: %s | %s\ncause: %s\n%s", e.Stack[0].File, e.Stack[0].Line, e.Code, e.Message, strings.Join(e.Details[0:maxMsg], "; "), e.Cause.Error(), e.Stack.String())
+		return fmt.Sprintf("%s:%d: error %d: %s | %s\ncause: %s %s", e.Stack[0].File, e.Stack[0].Line, e.Code, e.Message, strings.Join(e.Details[0:maxMsg], "; "), e.Cause.Error(), e.Stack.String())
 	}
 }
 
@@ -192,8 +192,9 @@ func (e *Errorx) getTrace() {
 		return
 	}
 
+	e.Stack = make([]StackFrame, 0)
+
 	for i := 2; ; i++ {
-		e.Stack = make([]StackFrame, 0)
 		pc, fn, line, ok := runtime.Caller(i)
 		if !ok {
 			// no more frames - we're done
