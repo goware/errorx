@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/c2h5oh/errorx"
+	"github.com/goware/errorx"
 )
 
 func TestErrorVerbosity(t *testing.T) {
@@ -33,7 +33,7 @@ func TestErrorVerbosity(t *testing.T) {
 
 	errorx.SetVerbosity(errorx.Trace)
 	err = e.Error()
-	expected = "errorx_test.go:35: error 10: error message | error details; error hint\nerrorx_test.go:35 github.com/c2h5oh/errorx_test.TestErrorVerbosity\ntesting.go:447 testing.tRunner\nasm_amd64.s:2232 runtime.goexit"
+	expected = "errorx_test.go:35: error 10: error message | error details; error hint\nerrorx_test.go:35 github.com/goware/errorx_test.TestErrorVerbosity\ntesting.go:447 testing.tRunner\nasm_amd64.s:2232 runtime.goexit"
 	if err != expected {
 		t.Errorf("Expected %s, got '%s'", expected, err)
 	}
@@ -58,7 +58,7 @@ func TestJsonVerbosity(t *testing.T) {
 
 	errorx.SetVerbosity(errorx.Debug)
 	err, _ = e.Json()
-	expected = `{"error_code":12,"error_message":"error message","error_details":["error details","error hint"],"stack":[{"file":"errorx_test.go","line":60,"function":"github.com/c2h5oh/errorx_test.TestJsonVerbosity"}]}`
+	expected = `{"error_code":12,"error_message":"error message","error_details":["error details","error hint"],"stack":[{"file":"errorx_test.go","line":60,"function":"github.com/goware/errorx_test.TestJsonVerbosity"}]}`
 	if string(err) != expected {
 		t.Errorf(`Expected '%s', got '%s'`, expected, string(err))
 	}
@@ -115,13 +115,13 @@ func TestErrorEmbedding(t *testing.T) {
 
 	errorx.SetVerbosity(errorx.Trace)
 	err = e1.Error()
-	expected = "errorx_test.go:117: error 10: error message | error details; error hint\ncause: error 200: wrapped error message | wrapped error details; wrapped error hint\nerrorx_test.go:117 github.com/c2h5oh/errorx_test.TestErrorEmbedding\ntesting.go:447 testing.tRunner\nasm_amd64.s:2232 runtime.goexit"
+	expected = "errorx_test.go:117: error 10: error message | error details; error hint\ncause: error 200: wrapped error message | wrapped error details; wrapped error hint\nerrorx_test.go:117 github.com/goware/errorx_test.TestErrorEmbedding\ntesting.go:447 testing.tRunner\nasm_amd64.s:2232 runtime.goexit"
 	if err != expected {
 		t.Errorf("Expected '%s', got '%s'", expected, err)
 	}
 
 	err = e2.Error()
-	expected = "errorx_test.go:123: error 11: error message | error details; error hint\ncause: wrapped regular error\nerrorx_test.go:123 github.com/c2h5oh/errorx_test.TestErrorEmbedding\ntesting.go:447 testing.tRunner\nasm_amd64.s:2232 runtime.goexit"
+	expected = "errorx_test.go:123: error 11: error message | error details; error hint\ncause: wrapped regular error\nerrorx_test.go:123 github.com/goware/errorx_test.TestErrorEmbedding\ntesting.go:447 testing.tRunner\nasm_amd64.s:2232 runtime.goexit"
 	if err != expected {
 		t.Errorf("Expected '%s', got '%s'", expected, err)
 	}
@@ -161,24 +161,24 @@ func TestJsonErrorEmbedding(t *testing.T) {
 
 	errorx.SetVerbosity(errorx.Debug)
 	e, _ = e1.Json()
-	expected = `{"error_code":10,"error_message":"error message","error_details":["error details","error hint"],"cause":{"error_code":200,"error_message":"wrapped error message","error_details":["wrapped error details","wrapped error hint"]},"stack":[{"file":"errorx_test.go","line":163,"function":"github.com/c2h5oh/errorx_test.TestJsonErrorEmbedding"}]}`
+	expected = `{"error_code":10,"error_message":"error message","error_details":["error details","error hint"],"cause":{"error_code":200,"error_message":"wrapped error message","error_details":["wrapped error details","wrapped error hint"]},"stack":[{"file":"errorx_test.go","line":163,"function":"github.com/goware/errorx_test.TestJsonErrorEmbedding"}]}`
 	if string(e) != expected {
 		t.Errorf("Expected '%s', got '%s'", expected, string(e))
 	}
 	e, _ = e2.Json()
-	expected = `{"error_code":11,"error_message":"error message","error_details":["error details","error hint"],"cause":{"error_message":"wrapped regular error"},"stack":[{"file":"errorx_test.go","line":168,"function":"github.com/c2h5oh/errorx_test.TestJsonErrorEmbedding"}]}`
+	expected = `{"error_code":11,"error_message":"error message","error_details":["error details","error hint"],"cause":{"error_message":"wrapped regular error"},"stack":[{"file":"errorx_test.go","line":168,"function":"github.com/goware/errorx_test.TestJsonErrorEmbedding"}]}`
 	if string(e) != expected {
 		t.Errorf("Expected '%s', got '%s'", expected, string(e))
 	}
 
 	errorx.SetVerbosity(errorx.Trace)
 	e, _ = e1.Json()
-	expected = `{"error_code":10,"error_message":"error message","error_details":["error details","error hint"],"cause":{"error_code":200,"error_message":"wrapped error message","error_details":["wrapped error details","wrapped error hint"]},"stack":[{"file":"errorx_test.go","line":175,"function":"github.com/c2h5oh/errorx_test.TestJsonErrorEmbedding"},{"file":"testing.go","line":447,"function":"testing.tRunner"},{"file":"asm_amd64.s","line":2232,"function":"runtime.goexit"}]}`
+	expected = `{"error_code":10,"error_message":"error message","error_details":["error details","error hint"],"cause":{"error_code":200,"error_message":"wrapped error message","error_details":["wrapped error details","wrapped error hint"]},"stack":[{"file":"errorx_test.go","line":175,"function":"github.com/goware/errorx_test.TestJsonErrorEmbedding"},{"file":"testing.go","line":447,"function":"testing.tRunner"},{"file":"asm_amd64.s","line":2232,"function":"runtime.goexit"}]}`
 	if string(e) != expected {
 		t.Errorf("Expected '%s', got '%s'", expected, string(e))
 	}
 	e, _ = e2.Json()
-	expected = `{"error_code":11,"error_message":"error message","error_details":["error details","error hint"],"cause":{"error_message":"wrapped regular error"},"stack":[{"file":"errorx_test.go","line":180,"function":"github.com/c2h5oh/errorx_test.TestJsonErrorEmbedding"},{"file":"testing.go","line":447,"function":"testing.tRunner"},{"file":"asm_amd64.s","line":2232,"function":"runtime.goexit"}]}`
+	expected = `{"error_code":11,"error_message":"error message","error_details":["error details","error hint"],"cause":{"error_message":"wrapped regular error"},"stack":[{"file":"errorx_test.go","line":180,"function":"github.com/goware/errorx_test.TestJsonErrorEmbedding"},{"file":"testing.go","line":447,"function":"testing.tRunner"},{"file":"asm_amd64.s","line":2232,"function":"runtime.goexit"}]}`
 	if string(e) != expected {
 		t.Errorf("Expected '%s', got '%s'", expected, string(e))
 	}
